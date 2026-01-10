@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "235047510456",
+    "project_id": "quan-ly-chi-tieu-34e67",
+    "storage_bucket": "quan-ly-chi-tieu-34e67.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:235047510456:android:d44f1918e5e0544ef0af4d",
+        "android_client_info": {
+          "package_name": "com.example.flutter_money_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBPPBJMeMu8-eaCXGcc229Quv4Jz1PUM6w"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
