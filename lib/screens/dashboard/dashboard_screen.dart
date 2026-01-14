@@ -4,8 +4,9 @@ import 'package:intl/intl.dart';
 import '../../services/auth_service.dart';
 import '../../services/transaction_service.dart';
 import '../../screens/auth/login_screen.dart';
-import '../../screens/transactions/transactions_screen.dart';
 import '../../screens/transactions/add_transaction_screen.dart';
+import '../../models/transaction.dart';
+import '../../widgets/transaction_card.dart';
 
 class DashboardScreen extends StatefulWidget {
   const DashboardScreen({super.key});
@@ -69,7 +70,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
 
     return Scaffold(
       appBar: AppBar(
-        title: const Text('Quản Lý Chi Tiêu'),
+        title: const Text('Trang Chủ'),
         actions: [
           IconButton(
             icon: const Icon(Icons.logout),
@@ -201,30 +202,118 @@ class _DashboardScreenState extends State<DashboardScreen> {
                       ],
                     ),
                     const SizedBox(height: 16),
-                    // Transactions List Button
+                    // Transactions List Section
                     Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 16),
-                      child: ElevatedButton.icon(
-                        onPressed: () {
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (_) => const TransactionsScreen(),
+                      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 80.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          const Text(
+                            'Giao Dịch Gần Đây',
+                            style: TextStyle(
+                              fontSize: 18,
+                              fontWeight: FontWeight.bold,
                             ),
-                          );
-                        },
-                        icon: const Icon(Icons.list),
-                        label: const Text('Xem Tất Cả Giao Dịch'),
-                        style: ElevatedButton.styleFrom(
-                          padding: const EdgeInsets.symmetric(vertical: 16),
-                          minimumSize: const Size(double.infinity, 50),
-                        ),
+                          ),
+                          const SizedBox(height: 12),
+                          StreamBuilder<List<TransactionModel>>(
+                            stream: _transactionService.getTransactions(_currentUser!.uid),
+                            builder: (context, snapshot) {
+                              if (snapshot.connectionState == ConnectionState.waiting) {
+                                return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(32.0),
+                                    child: CircularProgressIndicator(),
+                                  ),
+                                );
+                              }
+
+                              if (snapshot.hasError) {
+                                return Center(
+                                  child: Padding(
+                                    padding: const EdgeInsets.all(32.0),
+                                    child: Text('Lỗi: ${snapshot.error}'),
+                                  ),
+                                );
+                              }
+
+                              if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                                return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(32.0),
+                                    child: Text('Chưa có giao dịch nào'),
+                                  ),
+                                );
+                              }
+
+                              // Filter transactions by current month
+                              var transactions = snapshot.data!
+                                  .where((t) {
+                                    final tDate = t.date;
+                                    return tDate.year == _currentMonth.year &&
+                                        tDate.month == _currentMonth.month;
+                                  })
+                                  .toList();
+
+                              // Limit to 10 most recent
+                              transactions = transactions.take(10).toList();
+
+                              if (transactions.isEmpty) {
+                                return const Center(
+                                  child: Padding(
+                                    padding: EdgeInsets.all(32.0),
+                                    child: Text('Chưa có giao dịch nào trong tháng này'),
+                                  ),
+                                );
+                              }
+
+                              return Column(
+                                children: transactions.map((transaction) {
+                                  return TransactionCard(
+                                    transaction: transaction,
+                                    onTap: () {
+                                      Navigator.of(context)
+                                          .push(
+                                            MaterialPageRoute(
+                                              builder: (_) => AddTransactionScreen(
+                                                transaction: transaction,
+                                              ),
+                                            ),
+                                          )
+                                          .then((_) => _loadDashboardData());
+                                    },
+                                    onDelete: () async {
+                                      try {
+                                        await _transactionService.deleteTransaction(transaction.id);
+                                        _loadDashboardData();
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            const SnackBar(content: Text('Đã xóa giao dịch')),
+                                          );
+                                        }
+                                      } catch (e) {
+                                        if (mounted) {
+                                          ScaffoldMessenger.of(context).showSnackBar(
+                                            SnackBar(content: Text('Lỗi: $e')),
+                                          );
+                                        }
+                                      }
+                                    },
+                                  );
+                                }).toList(),
+                              );
+                            },
+                          ),
+                        ],
                       ),
                     ),
+                    const SizedBox(height: 16),
                   ],
                 ),
               ),
             ),
       floatingActionButton: FloatingActionButton.extended(
+        heroTag: "btn_add_transaction_1",
         onPressed: () {
           Navigator.of(context)
               .push(

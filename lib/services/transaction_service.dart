@@ -5,7 +5,6 @@ class TransactionService {
   final FirebaseFirestore _firestore = FirebaseFirestore.instance;
   final String _collection = 'transactions';
 
-  // Create transaction
   Future<void> createTransaction(TransactionModel transaction) async {
     try {
       await _firestore
@@ -17,7 +16,6 @@ class TransactionService {
     }
   }
 
-  // Get all transactions for a user
   Stream<List<TransactionModel>> getTransactions(String userId) {
     return _firestore
         .collection(_collection)
@@ -29,7 +27,6 @@ class TransactionService {
             .toList());
   }
 
-  // Get transactions by month
   Future<List<TransactionModel>> getTransactionsByMonth(
       String userId, DateTime month) async {
     try {
@@ -48,7 +45,6 @@ class TransactionService {
           .map((doc) => TransactionModel.fromMap(doc.data()))
           .toList();
       
-      // Sort by date descending
       transactions.sort((a, b) => b.date.compareTo(a.date));
       
       return transactions;
@@ -57,7 +53,6 @@ class TransactionService {
     }
   }
 
-  // Update transaction
   Future<void> updateTransaction(TransactionModel transaction) async {
     try {
       await _firestore
@@ -69,7 +64,6 @@ class TransactionService {
     }
   }
 
-  // Delete transaction
   Future<void> deleteTransaction(String transactionId) async {
     try {
       await _firestore.collection(_collection).doc(transactionId).delete();
@@ -78,13 +72,11 @@ class TransactionService {
     }
   }
 
-  // Get total income for current month
   Future<double> getTotalIncome(String userId, DateTime month) async {
     try {
       final startOfMonth = DateTime(month.year, month.month, 1);
       final endOfMonth = DateTime(month.year, month.month + 1, 0, 23, 59, 59);
 
-      // Get all transactions for user and filter in memory to avoid complex queries
       final snapshot = await _firestore
           .collection(_collection)
           .where('userId', isEqualTo: userId)
@@ -107,13 +99,11 @@ class TransactionService {
     }
   }
 
-  // Get total expense for current month
   Future<double> getTotalExpense(String userId, DateTime month) async {
     try {
       final startOfMonth = DateTime(month.year, month.month, 1);
       final endOfMonth = DateTime(month.year, month.month + 1, 0, 23, 59, 59);
 
-      // Get all transactions for user and filter in memory to avoid complex queries
       final snapshot = await _firestore
           .collection(_collection)
           .where('userId', isEqualTo: userId)

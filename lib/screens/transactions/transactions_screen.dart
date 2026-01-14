@@ -178,6 +178,7 @@ class _TransactionsScreenState extends State<TransactionsScreen> {
         ],
       ),
       floatingActionButton: FloatingActionButton(
+        heroTag: "btn_add_transaction_2",
         onPressed: () {
           Navigator.of(context)
               .push(

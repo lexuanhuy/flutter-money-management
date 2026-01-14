@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:firebase_auth/firebase_auth.dart';
 import 'screens/auth/login_screen.dart';
-import 'screens/dashboard/dashboard_screen.dart';
+import 'screens/main_navigation_screen.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'firebase_options.dart';
 
@@ -54,7 +54,7 @@ class AuthWrapper extends StatelessWidget {
           }
 
           if (snapshot.hasData) {
-            return const DashboardScreen();
+            return const MainNavigationScreen();
           }
 
           return const LoginScreen();

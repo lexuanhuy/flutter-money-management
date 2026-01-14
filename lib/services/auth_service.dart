@@ -3,13 +3,10 @@ import 'package:firebase_auth/firebase_auth.dart';
 class AuthService {
   final FirebaseAuth _auth = FirebaseAuth.instance;
 
-  // Get current user
   User? get currentUser => _auth.currentUser;
 
-  // Auth state stream
   Stream<User?> get authStateChanges => _auth.authStateChanges();
 
-  // Sign in with email and password
   Future<UserCredential?> signInWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -25,7 +22,6 @@ class AuthService {
     }
   }
 
-  // Register with email and password
   Future<UserCredential?> registerWithEmailAndPassword(
       String email, String password) async {
     try {
@@ -41,12 +37,10 @@ class AuthService {
     }
   }
 
-  // Sign out
   Future<void> signOut() async {
     await _auth.signOut();
   }
 
-  // Handle Firebase Auth exceptions
   String _handleAuthException(FirebaseAuthException e) {
     switch (e.code) {
       case 'weak-password':
