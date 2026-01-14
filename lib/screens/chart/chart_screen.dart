@@ -47,13 +47,15 @@ class _ChartScreenState extends State<ChartScreen> {
         _isLoading = false;
       });
     } catch (e) {
-      setState(() {
-        _isLoading = false;
-      });
       if (mounted) {
-        ScaffoldMessenger.of(context).showSnackBar(
-          SnackBar(content: Text('Lỗi: $e')),
-        );
+        setState(() {
+          _isLoading = false;
+        });
+        if (mounted) {
+          ScaffoldMessenger.of(context).showSnackBar(
+            SnackBar(content: Text('Lỗi: $e')),
+          );
+        }
       }
     }
   }
@@ -111,13 +113,11 @@ class _ChartScreenState extends State<ChartScreen> {
     for (var entry in sortedEntries) {
       final percentage = (entry.value / total * 100);
       final category = _categoryService.getCategoryByName(entry.key);
-      
+
       sections.add(
         PieChartSectionData(
           value: entry.value,
-          title: percentage > 5 
-              ? '${percentage.toStringAsFixed(1)}%' 
-              : '',
+          title: percentage > 5 ? '${percentage.toStringAsFixed(1)}%' : '',
           color: category?.color ?? colors[colorIndex % colors.length],
           radius: 100,
           titleStyle: const TextStyle(
@@ -133,10 +133,8 @@ class _ChartScreenState extends State<ChartScreen> {
     return sections;
   }
 
-  List<Widget> _buildCategoryList(
-      Map<String, double> expensesByCategory,
-      double totalExpense,
-      NumberFormat currencyFormat) {
+  List<Widget> _buildCategoryList(Map<String, double> expensesByCategory,
+      double totalExpense, NumberFormat currencyFormat) {
     final sortedEntries = expensesByCategory.entries.toList()
       ..sort((a, b) => b.value.compareTo(a.value));
 
@@ -274,8 +272,8 @@ class _ChartScreenState extends State<ChartScreen> {
                             icon: const Icon(Icons.arrow_back_ios),
                             onPressed: () {
                               setState(() {
-                                _currentMonth = DateTime(
-                                    _currentMonth.year, _currentMonth.month - 1);
+                                _currentMonth = DateTime(_currentMonth.year,
+                                    _currentMonth.month - 1);
                               });
                               _loadChartData();
                             },
@@ -355,7 +353,8 @@ class _ChartScreenState extends State<ChartScreen> {
                             sectionsSpace: 2,
                             centerSpaceRadius: 40,
                             pieTouchData: PieTouchData(
-                              touchCallback: (FlTouchEvent event, pieTouchResponse) {},
+                              touchCallback:
+                                  (FlTouchEvent event, pieTouchResponse) {},
                             ),
                           ),
                         ),

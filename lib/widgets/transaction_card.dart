@@ -68,7 +68,7 @@ class TransactionCard extends StatelessWidget {
           mainAxisSize: MainAxisSize.min,
           children: [
             Text(
-              '${isIncome ? '+' : '-'}${currencyFormat.format(transaction.amount)} đ',
+              '${isIncome ? '+' : '-'}${currencyFormat.format(transaction.amount)}đ',
               style: TextStyle(
                 fontSize: 16,
                 fontWeight: FontWeight.bold,
@@ -81,7 +81,7 @@ class TransactionCard extends StatelessWidget {
                 onPressed: onDelete,
                 iconSize: 20,
                 constraints: const BoxConstraints(),
-                padding: const EdgeInsets.only(left: 8),
+                padding: const EdgeInsets.only(left: 4),
               ),
           ],
         ),

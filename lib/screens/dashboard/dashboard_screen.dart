@@ -204,7 +204,7 @@ class _DashboardScreenState extends State<DashboardScreen> {
                     const SizedBox(height: 16),
                     // Transactions List Section
                     Padding(
-                      padding: const EdgeInsets.only(left: 16, right: 16, bottom: 80.0),
+                      padding: const EdgeInsets.only(left: 8, right: 8, bottom: 80.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
